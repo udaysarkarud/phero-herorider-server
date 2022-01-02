@@ -92,7 +92,7 @@ const main = async () => {
 main().catch(console.dir)
 
 app.get('/', (req, res) => {
-    res.send('Hello from backend')
+    res.send('Hello from HeroRide Backend')
 })
 
 app.listen(port, () => {
