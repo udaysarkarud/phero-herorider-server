@@ -33,16 +33,45 @@ const main = async () => {
 
         //UserData, Use Role
         app.put('/usersdata', async (req, res) => {
-            /* image data convert to base64 */
-            const profilePicData = req.files.profilePic.data.toString('base64')
-            const nidData = req.files.nid.data.toString('base64')
-            const drivingLicenceData = req.files.drivingLicence.data.toString('base64')
+            const imgData = {}
+
+            /* based on account type image data convert to base64 */
+            if (req.body.accountType === 'rideraccount') {
+                const profilePicBase = req.files.profilePic.data.toString('base64')
+                const profilePicData = Buffer.from(profilePicBase,'base64')
+                imgData.profilePicData = profilePicData
+                const nidBase = req.files.nid.data.toString('base64')
+                const nidData = Buffer.from(nidBase,'base64')
+                imgData.nidData = nidData
+                const drivingLicenceBase = req.files.drivingLicence.data.toString('base64')
+                const drivingLicenceData = Buffer.from(drivingLicenceBase,'base64')
+                imgData.drivingLicenceData = drivingLicenceData
+            }
+            else {
+                const profilePicBase = req.files.profilePic.data.toString('base64')
+                const profilePicData = Buffer.from(profilePicBase,'base64')
+                imgData.profilePicData = profilePicData
+                const nidBase = req.files.nid.data.toString('base64')
+                const nidData = Buffer.from(nidBase,'base64')
+                imgData.nidData = nidData
+            }
+
 
             /* make an object with all user data */
-            const userInfo = { ...req.body, profilePic: profilePicData, nid: nidData, drivingLicence: drivingLicenceData }
-           
+            const userInfo = { ...req.body, ...imgData }
+
             /* insert to db and send res */
             const result = await usersDataCollection.insertOne(userInfo)
+            res.send(result)
+        })
+
+        //Get UserData and check role
+        app.get('/usersdata/:email', async (req, res) => {
+            const activeUser = req.params.email
+            const filter = { email: activeUser }
+            const result = await usersDataCollection.findOne(filter);
+            
+           /*  const userType = await {accountType:result.accountType} */
             res.send(result)
         })
 
