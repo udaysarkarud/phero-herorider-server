@@ -75,6 +75,13 @@ const main = async () => {
             res.send(result)
         })
 
+        // Get review
+        app.get('/usersdata', async (req, res) => {
+            const activeUser = usersDataCollection.find({})
+            const result = await activeUser.limit(10).toArray()
+            res.send(result)
+        })
+
     }
 
     finally {
