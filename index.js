@@ -25,10 +25,6 @@ const main = async () => {
         await client.connect();
         const database = client.db("heroRider");
         const usersDataCollection = database.collection("usersData");
-        /* const productsDataCollection = database.collection("productsData");
-        const ordersDataCollection = database.collection("ordersData");
-        const reviewsDataCollection = database.collection("reviewsData");
-        const blogsDataCollection = database.collection("blogsData"); */
 
 
         //UserData, Use Role
@@ -80,6 +76,29 @@ const main = async () => {
             const activeUser = usersDataCollection.find({})
             const result = await activeUser.limit(10).toArray()
             res.send(result)
+        })
+
+
+        //BlockUsers
+        app.put('/blockuser', async (req, res) => {
+            
+            console.log(req.body);
+            const blockUserList = req.body
+            const updateStatus = {
+                $set: {
+                    accountStatus: "block"
+                },
+            };
+            let result
+            for(let i=0;i<=blockUserList.length;i++){
+                const getUserData = { _id: ObjectId(blockUserList[i]) }
+                result = await usersDataCollection.updateOne(getUserData, updateStatus)
+            }
+            res.send(result)
+
+            /* insert to db and send res */
+            /* const result = await usersDataCollection.insertOne(userInfo)
+            res.send(result) */
         })
 
     }
